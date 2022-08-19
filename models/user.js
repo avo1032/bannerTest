@@ -16,10 +16,6 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING,
           defaultValue: '',
         },
-        userName: {
-          type: Sequelize.STRING,
-          defaultValue: '',
-        }
       },
       {
         sequelize,

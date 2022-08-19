@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+            rel="stylesheet">
+
+        <title>인생 버킷리스트</title>
+
+        <style>
+            * {
+                font-family: 'Gowun Dodum', sans-serif;
+            }
+
+            .mypic {
+                width: 100%;
+                height: 200px;
+
+                background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80");
+                background-position: center;
+                background-size: cover;
+
+                color: white;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mypic > h1 {
+                font-size: 30px;
+            }
+
+            .mybox {
+                width: 95%;
+                max-width: 700px;
+                padding: 20px;
+                box-shadow: 0 0 10px 0 lightblue;
+                margin: 20px auto;
+            }
+
+            .mybucket > input {
+                width: 70%;
+            }
+
+            .mybox > li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                margin-bottom: 10px;
+                min-height: 48px;
+            }
+
+            .mybox > li > h2 {
+                max-width: 75%;
+                font-size: 20px;
+                font-weight: 500;
+                margin-left: auto;
+                margin-bottom: 0;
+            }
+
+            .mybox > li > h2.done {
+                text-decoration: line-through;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <div class="mypic">
+            <h1>나의 게시판</h1>
+        </div>
+
+        <div class="mybox">
+            <h2>이메일</h2>
+            <input
+                type="text"
+                class="form-control"
+                placeholder="최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)로 구성"
+                aria-label="userEmail"
+                aria-describedby="basic-addon1"
+                id="inputUser"/>
+            <h2>비밀번호</h2>
+            <input
+                type="password"
+                class="form-control"
+                placeholder="최소 4자 이상"
+                aria-label="Password"
+                aria-describedby="basic-addon2"
+                id="inputPassword1"/>
+            <h2>비밀번호확인</h2>
+            <input
+                type="password"
+                class="form-control"
+                placeholder="비밀번호를 한번 더 입력해주세요"
+                aria-label="Password"
+                aria-describedby="basic-addon2"
+                id="inputPassword2"/>
+        </div>
+        <div class="mybox">
+            <button type="button" onclick="sign_up()" class="btn btn-outline-primary">회원가입</button>
+            <button
+                type="button"
+                onclick="location.href='/'"
+                class="btn btn-outline-primary">취소</button>
+        </div>
+
+        <script>
+            function sign_up() {
+                const userEmail = $("#inputUser").val();
+                const password1 = $("#inputPassword1").val();
+                const password2 = $("#inputPassword2").val();
+
+                const userRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+                const passwordRegex = /^[A-Za-z\d@$!%*?&]{4,}$/;
+                const userValueCheck = userRegex.test(userEmail);
+                const passwordValueCheck = passwordRegex.test(password1);
+
+                if(!userValueCheck){
+                    alert('이메일을 확인해주세요');
+                    return;
+                }
+                if(!passwordValueCheck){
+                    alert('비밀번호는 최소 4자리입니다.');
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/signup",
+                    data: {
+                        userEmail: userEmail,
+                        password: password1,
+                        confirmPassword: password2
+                    },
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!", function () {
+                        });
+                        window.location.replace("/login.html");
+                    },
+                    error: function (error) {
+                        alert(error.responseJSON.errorMessage);
+                    }
+                });
+            }
+        </script>
+    </body>>
+</html>
