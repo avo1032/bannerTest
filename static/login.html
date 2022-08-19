@@ -119,21 +119,19 @@
         </div>
 
         <script>
-function login() {
-    let user = $("#userEmail").val();
-    let password = $("#password").val();
+function sign_in() {
+    const userEmail = $("#userEmail").val();
+    const password = $("#password").val();
     $.ajax({
         type: "POST",
-        url: "/api/auth",
+        url: "/users/login",
         data: {
-            user: user,
+            userEmail: userEmail,
             password: password
         },
         success: function (response) {
             localStorage.setItem("token", response.token);
-            window
-                .location
-                .replace("/bannerlist.html");
+            window.location.replace("/bannerlist.html");
         },
         error: function (error) {
             alert(error.responseJSON.errorMessage);

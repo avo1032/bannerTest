@@ -42,4 +42,38 @@ router.post("/signup", async(req, res) => {
     }
 });
 
+//로그인
+router.post("/login", async (req, res) => {
+    try {
+        const {userEmail, password} = req.body;
+
+        const user = await User.findOne({ where: { userEmail: userEmail } });
+        
+        if (!user) {
+            res.status(400).send({errorMessage: '가입된 이메일 주소가 아닙니다 다시 확인해주세요.'});
+            return;
+        }
+        const passwordIsValid = bcrypt.compareSync(password, user.password);
+        if (!passwordIsValid) {
+        return res.status(401).send({
+            errorMessage: '비밀번호를 다시 확인해주세요!',
+            });
+        }
+        const token = jwt.sign(
+            {
+                userEmail: user.userEmail,
+            },
+            process.env.ACCESS_TOKEN_SECRET
+        )
+        return res.status(200).send({
+            message: '로그인 성공',
+            token
+        })
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).send({errorMessage: "요청한 데이터 형식이 올바르지 않습니다."});
+    }
+});
+
 module.exports = router;

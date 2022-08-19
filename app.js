@@ -26,7 +26,7 @@ app.use(express.static("static"));
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(requestMiddleware);
 
-app.use("/api", [usersRouter]);
+app.use("/users", [usersRouter]);
 
 
 app.listen(port, () => {
