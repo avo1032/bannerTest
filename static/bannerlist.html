@@ -147,6 +147,18 @@
                     }
                 });
         }
+        function goLogin() {
+                if (localStorage.getItem("token") === null) {
+                    window.location.href = "/login.html";
+                } else {
+                    alert("이미 로그인이 되어있습니다.");
+                }
+        }
+        function signOut() {
+                localStorage.clear();
+                alert("로그아웃 되었습니다.")
+                window.location.href = "bannerlist.html";
+        }
     </script>
 </head>
 
@@ -163,7 +175,7 @@
     <button
         type="button"
         class="btn btn-lg btn-primary"
-        onclick="javascript:location.href='login.html'">로그인/회원가입</button>
+        onclick="goLogin()">로그인/회원가입</button>
     &nbsp;&nbsp;
     <button type="button" class="btn btn-lg btn-primary" onclick="signOut()">로그아웃</button>
 </div>

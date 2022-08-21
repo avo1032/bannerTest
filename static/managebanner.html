@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+            rel="stylesheet">
+
+        <title>인생 버킷리스트</title>
+
+        <style>
+            * {
+                font-family: 'Gowun Dodum', sans-serif;
+            }
+
+            .mypic {
+                width: 100%;
+                height: 200px;
+
+                background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80");
+                background-position: center;
+                background-size: cover;
+
+                color: white;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mypic > h1 {
+                font-size: 30px;
+            }
+
+            .mybox {
+                width: 95%;
+                max-width: 700px;
+                padding: 20px;
+                box-shadow: 0 0 10px 0 lightblue;
+                margin: 20px auto;
+            }
+
+            .mybucket > input {
+                width: 70%;
+            }
+
+            .mybox > li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                margin-bottom: 10px;
+                min-height: 48px;
+            }
+
+            .mybox > li > h2 {
+                max-width: 75%;
+                font-size: 20px;
+                font-weight: 500;
+                margin-left: auto;
+                margin-bottom: 0;
+            }
+
+            .mybox > li > h2.done {
+                text-decoration: line-through;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="mypic">
+            <h1>관리자 페이지</h1>
+        </div>
+
+        <div class="mybox" id="boardslist"></div>
+        <div class="mybox">
+            <button type="button" onclick="location.href='/createbanner.html'"
+            class="btn btn-outline-primary" >신규 배너 등록하기</button>
+            <button type="button" onclick="javascript:location.href='bannerlist.html'" class="btn btn-outline-primary">돌아가기</button>
+        </div>
+        <script>
+            $(document).ready(function () {
+                getBoards();
+            });
+
+            function goWrite() {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/boardswrite",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    success: function (response) {
+                        
+                        window
+                            .location
+                            .replace("/boardswrite.html");
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(status)
+                        console.log(xhr)
+                        console.log(error)
+                        if (xhr.status == 401) {
+                            alert("로그인이 필요합니다.");
+                        } else {
+                            localStorage.clear();
+                            // alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+                            alert("로그인이 필요합니다22.");
+                        }
+                        // window.location.href = "/login.html";
+                    }
+                });
+            }
+            function signOut() {
+                localStorage.clear();
+                window.location.href = "/";
+            }
+        </script>
+        <script>
+
+            function getBoards() {
+                $.ajax({
+                    type: "GET",
+                    url: `/banners/managebanner`,
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    success: function (response) {
+                        let rows = response["bannerlist"]
+                        let temphtml = ``;
+                        for (let i = 0; i < rows.length; i++) {
+                            let title = rows[i]["title"]
+                            let content = rows[i]["content"]
+                            let link = rows[i]["link"]
+                            let bannerId = rows[i]["bannerId"]
+                            let state = rows[i]["state"]
+                            state ? state = '보임' : state = '숨김'
+                            temphtml = `<li>
+                            <button
+                            onclick="location.href='/detail.html?bannerId=${bannerId}'"
+                                type="button"
+                                class="btn btn-outline-primary">${title}</button>
+                            <h2>${link}</h2>
+                            <h2>${state}</h2>
+                        </li>`;
+
+                            $("#boardslist").append(temphtml);
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -108,9 +108,7 @@
             </div>
             <div class="mybox">
                 <button class="btn btn-outline-primary" onclick="boards_write()">등록하기</button>
-                <!-- <button class="btn btn-outline-primary">수정</button> <button class="btn
-                btn-outline-primary" onclick="deleteBoards(boardsId)">삭제</button> -->
-                <button class="btn btn-outline-primary" onclick="location.href='/'">돌아가기</button>
+                <button class="btn btn-outline-primary" onclick="location.href='managebanner.html'">돌아가기</button>
             </div>
         </div>
         <script>
@@ -142,26 +140,6 @@
                     }
                 });
             }
-            // $(document).ready(function () {
-                
-
-            //     getBoardsId();
-            // });
-            // function getBoardsId(){
-            //     $.ajax({
-            //         type: "GET",
-            //         url: `api/boardswrite`,
-            //         headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
-            //         data: {
-            //         },
-            //         success: function (response) {
-            //             console.log(response)
-            //             // let writeUser = response["writeId"]
-            //             // let temphtml = `${writeUser}`;
-            //             $("#writer").append("<h2>닉네임 : " + response + "</h2>");
-            //         }
-            //     });
-            // }
 
         </script>
     </body>

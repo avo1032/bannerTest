@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+            rel="stylesheet">
+
+        <title>인생 버킷리스트</title>
+
+        <style>
+            * {
+                font-family: 'Gowun Dodum', sans-serif;
+            }
+
+            .mypic {
+                width: 100%;
+                height: 200px;
+
+                background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80");
+                background-position: center;
+                background-size: cover;
+
+                color: white;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mypic > h1 {
+                font-size: 30px;
+            }
+
+            .mybox {
+                width: 95%;
+                max-width: 700px;
+                padding: 20px;
+                box-shadow: 0 0 10px 0 lightblue;
+                margin: 20px auto;
+            }
+
+            .mybucket > input {
+                width: 70%;
+            }
+
+            .mybox > li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                margin-bottom: 10px;
+                min-height: 48px;
+            }
+
+            .mybox > li > h2 {
+                max-width: 75%;
+                font-size: 20px;
+                font-weight: 500;
+                margin-left: auto;
+                margin-bottom: 0;
+            }
+
+            .mybox > li > h2.done {
+                text-decoration: line-through;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mypic">
+            <h1>배너 관리 - 수정/삭제</h1>
+        </div>
+
+        <div class="mybox" id="boardsUpdate">
+            
+        </div>
+
+        <script>
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const bannerId = urlParams.get("bannerId");
+            $(document).ready(function () {
+
+                getbannerDetail(bannerId);
+            });
+
+            function getbannerDetail(bannerId) {
+            $.ajax({
+                type: "GET", url: `/banners/bannerdetail/${bannerId}`,
+                // headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
+                success: function (response) {
+                    let board = response["detail"]
+                    let title = board.title;
+                    let content = board.content;
+                    let link = board.link;
+                    let state = board.state;
+                    if(state){
+                        let temphtml = `<div class="mybox">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="${title}" id="inputTitle">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="${link}" id="inputLink">
+                    </div>
+                    <div class="input-group mb-3">
+                        <form id="myForm">
+                        <label><input type="radio" name="state" value=true  checked="checked"> 보임</label>
+                        <label><input type="radio" name="state" value=false> 숨김</label>
+                        </form>
+                    </div>
+                </div>
+                <div class="mybox">
+                    <div class="form-floating">
+                        <textarea
+                            id="inputContent"
+                            class="form-control"
+                            placeholder="Leave a comment here"
+                            style="height: 300px;">${content}</textarea>
+                        <label for="floatingTextarea2">내용</label>
+                        이미지파일 <input type="file" name="file" id="imgfile">
+                    </div>
+                </div>
+                <div class="mybox">
+                    <button class="btn btn-outline-primary" onclick="updateBanner(bannerId)">수정하기</button>
+                    <button class="btn btn-outline-primary" onclick="deleteBanner(bannerId)">삭제하기</button>
+                    <button class="btn btn-outline-primary" onclick="location.href='managebanner.html'">돌아가기</button>
+                </div>
+                `; 
+                $("#boardsUpdate").append(temphtml);
+                }else{
+                    let temphtml = `<div class="mybox">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="${title}" id="inputTitle">
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="${link}" id="inputLink">
+                    </div>
+                    <div class="input-group mb-3">
+                        <form id="myForm">
+                        <label><input type="radio" name="state" value=true> 보임</label>
+                        <label><input type="radio" name="state" value=false  checked="checked"> 숨김</label>
+                        </form>
+                    </div>
+                </div>
+                <div class="mybox">
+                    <div class="form-floating">
+                        <textarea
+                            id="inputContent"
+                            class="form-control"
+                            placeholder="Leave a comment here"
+                            style="height: 300px;">${content}</textarea>
+                        <label for="floatingTextarea2">내용</label>
+                        이미지파일 <input type="file" name="file" id="imgfile">
+                    </div>
+                </div>
+                <div class="mybox">
+                    <button class="btn btn-outline-primary" onclick="updateBanner(bannerId)">수정하기</button>
+                    <button class="btn btn-outline-primary" onclick="deleteBanner(bannerId)">삭제하기</button>
+                    <button class="btn btn-outline-primary" onclick="location.href='managebanner.html'">돌아가기</button>
+                </div>
+                `;
+                $("#boardsUpdate").append(temphtml);
+                }
+                   
+
+
+                }
+            });
+}
+
+function deleteBanner(bannerId) {
+    $.ajax({
+        type: "DELETE",
+        url: `/banners/delete/${bannerId}`,
+        data: {
+        },
+        headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
+
+        success: function (response) {
+                alert('게시글이 삭제되었습니다.');
+                window.location.href = 'managebanner.html'
+        },
+        error: function (xhr, status, error) {
+            if (xhr.status == 401) {
+                alert("로그인이 필요합니다.");
+            } else {
+                localStorage.clear();
+                alert("로그인이 필요합니다22.");
+            }
+        }
+    });
+}
+
+function updateBanner(bannerId) {
+    const title = $("#inputTitle").val();
+    const content = $("#inputContent").val();
+    const link = $("#inputLink").val();
+    const imgfile = $("#imgfile").val();
+    const state = $('input[name=state]:checked', '#myForm').val();
+
+    const form = new FormData();
+    form.append("imgfile", $("#imgfile")[0].files[0] );
+    form.append("title", title);
+    form.append("content", content)
+    form.append("link", link)
+    form.append("state", state)
+    $.ajax({
+        type: "PATCH", url: `/banners/updatebanner/${bannerId}`,
+        headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
+        processData: false,
+        contentType: false,
+        data: form,
+        success: function (response) {
+            alert("배너가 수정 되었습니다.")
+            window.location.replace("/managebanner.html");
+        },
+        error: function (error) {
+            alert(error.responseJSON.errorMessage);
+        }
+    });
+}
+
+        </script>
+    </body>
+</html>
