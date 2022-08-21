@@ -16,6 +16,7 @@ sequelize
   });
 
 const usersRouter = require("./routes/users")
+const bannersRouter = require("./routes/banners")
 
 const requestMiddleware = (req, res, next) =>{
     console.log("Request URL:", req.originalUrl, " - ", new Date());
@@ -23,10 +24,12 @@ const requestMiddleware = (req, res, next) =>{
 }
 
 app.use(express.static("static"));
+app.use(express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(requestMiddleware);
 
 app.use("/users", [usersRouter]);
+app.use("/banners", [bannersRouter]);
 
 
 app.listen(port, () => {

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+            rel="stylesheet">
+
+        <title>인생 버킷리스트</title>
+
+        <style>
+            * {
+                font-family: 'Gowun Dodum', sans-serif;
+            }
+
+            .mypic {
+                width: 100%;
+                height: 200px;
+
+                background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1601024445121-e5b82f020549?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80");
+                background-position: center;
+                background-size: cover;
+
+                color: white;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mypic > h1 {
+                font-size: 30px;
+            }
+
+            .mybox {
+                width: 95%;
+                max-width: 700px;
+                padding: 20px;
+                box-shadow: 0 0 10px 0 lightblue;
+                margin: 20px auto;
+            }
+
+            .mybucket > input {
+                width: 70%;
+            }
+
+            .mybox > li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                margin-bottom: 10px;
+                min-height: 48px;
+            }
+
+            .mybox > li > h2 {
+                max-width: 75%;
+                font-size: 20px;
+                font-weight: 500;
+                margin-left: auto;
+                margin-bottom: 0;
+            }
+
+            .mybox > li > h2.done {
+                text-decoration: line-through;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="mypic">
+            <h1>배너 등록하기</h1>
+        </div>
+
+        <div class="mybox">
+            <div class="mybox" id="boardslist">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="제목" id="inputTitle">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="링크주소" id="inputLink">
+                </div>
+            </div>
+            <div class="mybox">
+                <div class="form-floating">
+                    <textarea
+                        id="inputContent"
+                        class="form-control"
+                        style="height: 300px;"></textarea>
+                    <label for="floatingTextarea2" id="abc">내용</label>
+                    이미지파일 <input type="file" name="file" id="imgfile"> <!-- <input type="file" name="file" file={this.state.file} value={this.state.fileName} onchange={this.handleFileChange}> -->
+                </div>
+            </div>
+            <div class="mybox">
+                <button class="btn btn-outline-primary" onclick="boards_write()">등록하기</button>
+                <!-- <button class="btn btn-outline-primary">수정</button> <button class="btn
+                btn-outline-primary" onclick="deleteBoards(boardsId)">삭제</button> -->
+                <button class="btn btn-outline-primary" onclick="location.href='/'">돌아가기</button>
+            </div>
+        </div>
+        <script>
+            function boards_write() {
+                const title = $("#inputTitle").val();
+                const content = $("#inputContent").val();
+                const link = $("#inputLink").val();
+                const imgfile = $("#imgfile").val();
+                
+                const form = new FormData();
+                form.append("imgfile", $("#imgfile")[0].files[0] );
+                form.append("title", title);
+                form.append("content", content)
+                form.append("link", link)
+                $.ajax({
+                    type: "POST",
+                    url: `banners/createbanner`,
+                    headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
+                    processData: false,
+                    contentType: false,
+                    data: form,
+                    success: function (response) {
+                        {
+                            alert('게시글이 등록되었습니다.');
+                            window
+                                .location
+                                .replace("/");
+                        };
+                    }
+                });
+            }
+            // $(document).ready(function () {
+                
+
+            //     getBoardsId();
+            // });
+            // function getBoardsId(){
+            //     $.ajax({
+            //         type: "GET",
+            //         url: `api/boardswrite`,
+            //         headers: {   authorization: `Bearer ${localStorage.getItem("token")}`, },
+            //         data: {
+            //         },
+            //         success: function (response) {
+            //             console.log(response)
+            //             // let writeUser = response["writeId"]
+            //             // let temphtml = `${writeUser}`;
+            //             $("#writer").append("<h2>닉네임 : " + response + "</h2>");
+            //         }
+            //     });
+            // }
+
+        </script>
+    </body>
+</html>

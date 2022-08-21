@@ -16,6 +16,10 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING,
           defaultValue: '',
         },
+        grade: {
+          type: Sequelize.STRING,
+          defaultValue: 'silver',
+        }
       },
       {
         sequelize,
@@ -28,5 +32,10 @@ module.exports = class User extends Sequelize.Model {
   }
 
   static associate(db) {
+    User.hasMany(db.Banner, {
+      foreignKey: 'userId',
+      sourceKey: 'userId',
+      onDelete: 'CASCADE',
+    });
   }
 };
